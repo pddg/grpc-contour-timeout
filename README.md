@@ -52,3 +52,19 @@ make load-image
 # Rollout the deployment
 make rollout
 ```
+
+## Configure timeout
+
+This can be easily changed by editing the following.
+
+https://github.com/pddg/grpc-contour-timeout/blob/master/kubernetes/httpproxy.libsonnet#L19-L21
+
+Then, run `make apply`
+
+```
+make apply
+```
+
+## Author
+
+- pddg
