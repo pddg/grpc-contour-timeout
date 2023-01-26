@@ -1,0 +1,37 @@
+#!/bin/sh
+set -eu
+
+log() {
+    echo "install-protoc: $1" >&2
+}
+
+check_sha256() {
+    if ! echo "$2 $1" | sha256sum --check; then
+        log "Failed to verify archive: hash mismatch: filename=$1, expected=$2, actual=$(sha256sum "$1" | awk '{ print $1 }')"
+        exit 1
+    fi
+}
+
+if [ $# -ne 2 ]; then
+    echo "Usage: $(basename "$0") VERSION SHA256" >&2
+    exit 2
+fi
+
+VERSION="$1"
+SHA256="$2"
+
+log "VERSION: $VERSION"
+
+TOP_DIR=$(git rev-parse --show-toplevel)
+TOOLS_DIR="$TOP_DIR/tools"
+PROTOC_DIR="$TOOLS_DIR/protoc-$VERSION"
+
+log "Download and extract protoc..."
+PROTOC_ZIP="protoc-${VERSION}-linux-x86_64.zip"
+curl -fsSLO "https://github.com/protocolbuffers/protobuf/releases/download/v${VERSION}/${PROTOC_ZIP}"
+mkdir -p "$TOOLS_DIR"
+check_sha256 "$PROTOC_ZIP" "$SHA256"
+unzip -o "$PROTOC_ZIP" -d "$PROTOC_DIR"
+rm "$PROTOC_ZIP"
+
+log "Installed"

@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package pddg.playground.grpctimeout;
+
+option go_package = "github.com/pddg/grpc-contour-timeout/proto";
+
+service Greeter {
+  rpc Hi(HiRequest) returns (Response) {}
+  rpc Hello(HelloRequest) returns (stream Response) {}
+  rpc SeeYou(stream SeeYouRequest) returns (Response) {}
+}
+
+message HiRequest {
+    int64 delay_sec = 1;
+    string message = 2;
+}
+
+message HelloRequest {
+    int64 delay_sec = 1;
+    int64 interval_sec = 2;
+    string message = 3;
+}
+
+message SeeYouRequest {
+    string message = 3;
+}
+
+message Response {
+    string message = 1;
+}
